@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.LinkedList;
 
 
-
-
 /**
  * Una implementación de {@code Diccionario} mediante nodos encadenados que preserva,
  * las propiedades de ABB y ademas mantiene el arbol balanceado, es decir,
@@ -30,7 +28,8 @@ public class Avl<T> implements Diccionario<T> {
      * @param comparador define una forma de comparar los valores insertados en el arbol.
      */
     public Avl(Comparator<? super T> comparador) {
-        throw new UnsupportedOperationException("TODO: implementar");
+        this.raiz = null;
+        this.comparador = comparador;
     }
 
     /**
@@ -40,7 +39,8 @@ public class Avl<T> implements Diccionario<T> {
      * @param valor de la raiz del nuevo arbol si no es null.
      */
     public Avl(Comparator<? super T> comparador, T valor) {
-        throw new UnsupportedOperationException("TODO: implementar");
+        this.raiz.setValor(valor);
+        this.comparador = comparador;
     }
 
     /**
@@ -48,7 +48,22 @@ public class Avl<T> implements Diccionario<T> {
      */
     @Override
     public void insertar( T elem ) {
-        throw new UnsupportedOperationException("TODO: implementar");
+       NodoBinario <T> aux = new NodoBinario<>(elem, null, null);
+       if (raiz == null){
+            raiz = aux;
+       }
+       else{
+            if((raiz.getValor()).compareTo(elem) > 0){
+                //significa que debe de ir a la derecha
+            }
+            else if ((raiz.getValor()).compareTo(elem) < 0){
+                //va para la izquierda
+            }
+            else if ((raiz.getValor()).compareTo(elem) == 0){
+                //el elemento ya existe dentro de la lista, asi que solo return
+                return;
+            }
+       }
     }
 
 
@@ -56,8 +71,17 @@ public class Avl<T> implements Diccionario<T> {
      * {@inheritDoc}
      */
     public boolean pertenece(T elem) {
-        throw new UnsupportedOperationException("TODO: implementar");
-    }
+        NodoBinario<T> aux = raiz;
+		while (aux != null) {
+			if (aux.getValor().compareTo(data) == 0)
+				return true;
+			else if (aux.getValor().compareTo(data) > 0)
+				aux = aux.getIzquierdo();
+			else
+				aux = aux.getDerecho();
+		}
+		return false;
+	}
 
 
     /**
@@ -71,13 +95,16 @@ public class Avl<T> implements Diccionario<T> {
     /**{@inheritDoc}*/
     @Override
     public void vaciar() {
-        throw new UnsupportedOperationException("TODO: implementar");
+        raiz.setDerecho(null);
+        raiz.setIzquierdo(null);
+        raiz.setAltura(0);
+        this.raiz = null;
     }
 
     /**{@inheritDoc}*/
     @Override
     public T raiz() {
-        throw new UnsupportedOperationException("TODO: implementar");
+        return raiz();
     }
 
     /**{@inheritDoc}*/
@@ -101,26 +128,40 @@ public class Avl<T> implements Diccionario<T> {
     /**{@inheritDoc}*/
     @Override
     public int altura() {
-        throw new UnsupportedOperationException("TODO: implementar");
+        return raiz.getAltura();
     }
 
     /**{@inheritDoc}*/
     @Override
     public boolean esVacio() {
-        throw new UnsupportedOperationException("TODO: implementar");
+        return (altura(raiz) == 0); 
     }
 
     /**{@inheritDoc}*/
     @Override
     public T mayorValor(){
-        throw new UnsupportedOperationException("TODO: implementar");
-    }
+        NodoBinario<T> aux = raiz;
+		if (aux == null){
+			return null;
+        }
+		while (aux.getDerecho() != null){
+            local = local.getDerecho();
+        }
+		return aux.getValor();
+	}
 
     /**{@inheritDoc}*/
     @Override
     public T menorValor() {
-        throw new UnsupportedOperationException("TODO: implementar");
-    }
+        NodoBinario<T> aux = raiz;
+		if (aux == null){
+			return null;
+        }
+		while (aux.getIzquierdo() != null) {
+			aux = aux.getIzquierdo();
+		}
+		return aux.getValor();
+	}
 
     /**{@inheritDoc}*/
     @Override
@@ -139,8 +180,10 @@ public class Avl<T> implements Diccionario<T> {
      * @return diferencia de altura de los subarboles.
      */
     public int balance(){
-        throw new UnsupportedOperationException("TODO: implementar");
-    }
+        int R = (raiz.getDerecho()).getAltura();
+		int L = (raiz.getIzquierdo()).getAltura();
+		return (L-R);
+	}
 
     /**{@inheritDoc}*/
     @Override

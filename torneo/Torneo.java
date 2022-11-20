@@ -1,5 +1,7 @@
 package torneo;
 
+import torneo.*;
+
 import colecciones.arbol.Diccionario;
 
 import java.util.Set;
@@ -7,9 +9,6 @@ import java.util.Set;
 public class Torneo {
     Set<Equipo> equipos;
     Diccionario<PartidosEquipo> posiciones;
-
-    //TODO: Completar codigo y documentacion acorde a la implementacion elegida.
-
     /**
      * Dado un equipo {@code e}, retorna el equipo siguiente (el que le sigue en cantidad de puntos) en la tabla de posiciones.
      * Esta operacion debe realizarse en O(log n).
@@ -18,7 +17,7 @@ public class Torneo {
      */
     public Equipo siguiente(Equipo e){
         throw new UnsupportedOperationException("Debe implementar este método");
-
+        //aca hay que usar el hashmap je
     }
 
     /**
@@ -36,7 +35,36 @@ public class Torneo {
 
      */
     public void agregarPartido(Equipo eLocal, Equipo eVisitante, int golesEL, int golesEV, int amarillasEL, int amarillasEV, int rojasEL, int rojasEV){
-        throw new UnsupportedOperationException("Debe implementar este método");
+        
+        // Tendriamos que buscar si el equipo está en el arbol, si no está crearles el tipo (partidos equipo) y
+        // ahi poder setearlos como está abajo, sino hay que solamente actualizar goles, tarjetas y eso.
+        // donde equipoLocal = buscarEquipoenarbol
+        // equipovisitante lo mismo.
+        PartidosEquipo equipoLocal = new PartidosEquipo(eLocal, golesEL, amarillasEL, rojasEL, 0);
+        PartidosEquipo equipoVisitante = new PartidosEquipo(eVisitante, golesEV, amarillasEV, rojasEV, 0);
+        //---------------------------------------------------------------------------------------------------------
+            if(golesEL > golesEV){
+                equipoLocal.setPuntos(equipoLocal.getPuntos() + 3);
+            }
+            else if (golesEV > golesEL){
+                equipoVisitante.setPuntos(equipoVisitante.getPuntos() + 3);
+            }
+            else{
+                equipoLocal.setPuntos(equipoLocal.getPuntos() + 1);
+                equipoVisitante.setPuntos(equipoVisitante.getPuntos() + 1);
+            }
+        
+        if (equipoVisitante.getPuntos() == equipoLocal.getPuntos()){
+            //aca se haria la diferencia por goles que tenga cada uno registrado en el torneo, sino 
+
+            if(equipoVisitante.getPuntos() == equipoVisitante.getPuntos()){
+                //aca se haria el tema de amarillas y rojas acumuladas en el partido
+            }
+        }
+
+        //despues acá se agregarian los equipos al arbol (de ser nuevos elementos), sino actualizar los puntos de cada uno, eso con un
+        //avl automaticamente se va a rotar y mover creo yo, hay que seguir con el tipo avl
+        
     }
 
     /**
@@ -45,7 +73,7 @@ public class Torneo {
      * @return datos de los puntajes asociados a los partidos del equipo con mas puntos en la tabla de posiciones.
      */
     public PartidosEquipo puntero(){
-        throw new UnsupportedOperationException("Debe implementar este método");
+        return ((posiciones.raiz()).getPuntos());
     }
 
     /**
@@ -56,6 +84,7 @@ public class Torneo {
      */
     public int puntos(Equipo e){
         throw new UnsupportedOperationException("Debe implementar este método");
+        //acá tambien hay que usarlo al hashmap xd
     }
 
 }
