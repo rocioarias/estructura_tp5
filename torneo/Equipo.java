@@ -2,12 +2,12 @@ package torneo;
 
 public class Equipo {
     
-    private char nombre;
+    private String nombre;
     private int golesContra;
     private int golesAFavor;
     private int puntos;
     
-    public Equipo(int gC, int gF, int puntos, char nom) {
+    public Equipo(int gC, int gF, int puntos, String nom) {
         this.golesContra = gC;
         this.golesAFavor = gF;
         this.nombre = nom;
@@ -33,11 +33,11 @@ public class Equipo {
         return golesContra;
     }
     
-    public char getNombre() {
+    public String getNombre() {
         return nombre;
     }
 
-    public void setNombre (char nombre) {
+    public void setNombre (String nombre) {
         this.nombre = nombre;
     }
 

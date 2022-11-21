@@ -1,9 +1,10 @@
 package torneo;
-import torneo.equipo;
+import torneo.Equipo;
+import java.util.Comparator;
 
 public class PartidosEquipo{
     
-    private equipo equipoX;
+    private Equipo equipoX;
     private int puntos;
     private int golesX;
 	private int amarillas;
@@ -26,11 +27,11 @@ public class PartidosEquipo{
     		
     }
 
-	public equipo getEquipoX() {
+	public Equipo getEquipoX() {
 		return equipoX;
 	}
 
-	public void setEquipoX(equipo equipoX) {
+	public void setEquipoX(Equipo equipoX) {
 		this.equipoX = equipoX;
 	}
 
@@ -65,4 +66,6 @@ public class PartidosEquipo{
 	public void setRojas(int rojas) {
 		this.rojas = rojas;
 	}
+
+	
 }

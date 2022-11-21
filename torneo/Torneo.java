@@ -3,9 +3,18 @@ package torneo;
 import torneo.*;
 
 import colecciones.arbol.Diccionario;
+import colecciones.arbol.Diccionario.Orden;
 
 import java.util.Set;
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
+@SuppressWarnings("unchecked")
 public class Torneo {
     Set<Equipo> equipos;
     Diccionario<PartidosEquipo> posiciones;
@@ -16,8 +25,11 @@ public class Torneo {
      * @return Equipo siguiente segun la tabla de posiciones del torneo, si hay mas de un equipo con partidos jugados.
      */
     public Equipo siguiente(Equipo e){
-        throw new UnsupportedOperationException("Debe implementar este método");
-        //aca hay que usar el hashmap je
+            LinkedList lista = new LinkedList<>();
+            lista.addAll(posiciones.aLista());
+            lista.sort(new SortbyPuntos());
+            Equipo aux = (Equipo)lista.get(lista.indexOf(e)+1);
+        return aux;
     }
 
     /**
@@ -36,35 +48,25 @@ public class Torneo {
      */
     public void agregarPartido(Equipo eLocal, Equipo eVisitante, int golesEL, int golesEV, int amarillasEL, int amarillasEV, int rojasEL, int rojasEV){
         
-        // Tendriamos que buscar si el equipo está en el arbol, si no está crearles el tipo (partidos equipo) y
-        // ahi poder setearlos como está abajo, sino hay que solamente actualizar goles, tarjetas y eso.
-        // donde equipoLocal = buscarEquipoenarbol
-        // equipovisitante lo mismo.
-        PartidosEquipo equipoLocal = new PartidosEquipo(eLocal, golesEL, amarillasEL, rojasEL, 0);
-        PartidosEquipo equipoVisitante = new PartidosEquipo(eVisitante, golesEV, amarillasEV, rojasEV, 0);
-        //---------------------------------------------------------------------------------------------------------
-            if(golesEL > golesEV){
-                equipoLocal.setPuntos(equipoLocal.getPuntos() + 3);
-            }
-            else if (golesEV > golesEL){
-                equipoVisitante.setPuntos(equipoVisitante.getPuntos() + 3);
-            }
-            else{
-                equipoLocal.setPuntos(equipoLocal.getPuntos() + 1);
-                equipoVisitante.setPuntos(equipoVisitante.getPuntos() + 1);
-            }
-        
-        if (equipoVisitante.getPuntos() == equipoLocal.getPuntos()){
-            //aca se haria la diferencia por goles que tenga cada uno registrado en el torneo, sino 
+        if(posiciones != null){
+            List<PartidosEquipo> lista = new LinkedList<>();
+            lista = posiciones.aLista();
+            Boolean visitante, local;
+            local = lista.contains(eLocal);
+            visitante = lista.contains(eVisitante);
 
-            if(equipoVisitante.getPuntos() == equipoVisitante.getPuntos()){
-                //aca se haria el tema de amarillas y rojas acumuladas en el partido
+
+            if (local && visitante){
+                calcularPuntos(eLocal, golesEL, golesEV, amarillasEL,rojasEL);
+                calcularPuntos(eVisitante,golesEV, golesEL, amarillasEV, rojasEV);
+            }else{
+                if(local == false){
+                    throw new Error("No se ha encontrado el equipo local");
+                }else{
+                    throw new Error("No se ha encontrado el equipo visitante");
+                }
             }
         }
-
-        //despues acá se agregarian los equipos al arbol (de ser nuevos elementos), sino actualizar los puntos de cada uno, eso con un
-        //avl automaticamente se va a rotar y mover creo yo, hay que seguir con el tipo avl
-        
     }
 
     /**
@@ -73,7 +75,11 @@ public class Torneo {
      * @return datos de los puntajes asociados a los partidos del equipo con mas puntos en la tabla de posiciones.
      */
     public PartidosEquipo puntero(){
-        return ((posiciones.raiz()).getPuntos());
+        LinkedList lista = new LinkedList<>();
+            lista.addAll(posiciones.aLista());
+            lista.sort(new SortbyPuntos());
+            PartidosEquipo aux = (PartidosEquipo)lista.getLast();
+        return aux;
     }
 
     /**
@@ -83,8 +89,45 @@ public class Torneo {
      * @return los puntos que tiene el equipo {@code e} segun la tabla de posiciones.
      */
     public int puntos(Equipo e){
-        throw new UnsupportedOperationException("Debe implementar este método");
-        //acá tambien hay que usarlo al hashmap xd
+        return e.getPuntos();
     }
 
+
+    public void calcularPuntos(Equipo e, int goles, int goles2, int amarillas, int rojas){
+            if(goles > goles2){
+                e.setPuntos(e.getPuntos() + 3);
+            }
+            
+            if(goles == goles2){
+                e.setPuntos(e.getPuntos() + 1);
+            }
+
+        if(amarillas==1){
+            e.setPuntos(e.getPuntos() - 1);
+        }else{
+            if(amarillas==2){
+                e.setPuntos(e.getPuntos() - 3);
+            }else{
+                if(amarillas>2){
+                    while(amarillas>1){
+                        e.setPuntos(e.getPuntos() - 3);
+                        amarillas= amarillas - 2;
+                    }
+                    if(amarillas==1){
+                        e.setPuntos(e.getPuntos() - 1);
+                    }
+                }
+            }
+        }
+        if(rojas>0){
+            e.setPuntos(e.getPuntos() - 4*rojas);
+        }
+    }
+
+    static class SortbyPuntos implements Comparator<PartidosEquipo> {
+        public int compare(PartidosEquipo a, PartidosEquipo b){
+            return a.getPuntos() - b.getPuntos();
+        }
+    }
+    
 }
