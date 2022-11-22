@@ -46,127 +46,91 @@ public class Avl<T> implements Diccionario<T> {
      * {@inheritDoc}
      */
     @Override
-    public void insertar( T elem ) throws ClassCastException, NullPointerException, IllegalStateException {
-        NodoBinario <T> nuevoNodo = new NodoBinario <T> (elem, null, null);
-        NodoBinario <T> raizAux = raiz;
-        boolean salir = false;
-        boolean irDerecha = false;
-        if (raizAux == null){
-            this.raiz = nuevoNodo;
-        }
-        else{
-            if(pertenece(elem)){
-                return;
-            }
-            else{
-                while (!salir){
-                    if(this.compararDato(nuevoNodo.getValor(), raizAux.getValor()) > 0){
-                        if(raiz.getDerecho() != null){
-                            raizAux = raizAux.getDerecho();
-                        }
-                        else{
-                            salir = true;
-                            der = true;
-                        }       
-                    }
-                    else{
-                        if (raizAux.getIzquierdo() != null){
-                            raizAux = raizAux.getIzquierdo();
-                        }
-                        else{
-                            salir = true;
-                        }
-                    }
-                }
-
-                if(der == true){
-                    raizAux.setDerecho(nuevoNodo);
-                }
-                else{
-                    raizAux.setIzquierdo(nuevoNodo);
-                }
-                while(equilibrado(raiz) < 0){
-                    raizAux = padre(raizAux);
-                
-                    if(raizAux.getDerecho()==null){
-                        altDer = 0;
-                    }else{
-                        altDer = raizAux.getDerecho().getAltura();
-                    }
-                    
-                    if(raizAux.getIzquierdo()==null){
-                        altIzq = 0;
-                    }else{
-                        altIzq = raizAux.getIzquierdo().getAltura();
-                    }
-                    
-                    NodoBinario<T> cambiar = estructurar(raizAux);
-                    NodoBinario<T> superior = padre(raizAux);
-        
-                    //si los nodos modificados tenian un padre anteriormente
-                    if(compararDato(superior.getValor(), raizAux.getValor())!=0){
-                        if(superior.getIzquierdo()!=null && compararDato(superior.getIzquierdo().getValor(), raizAux.getValor())==0){
-                            superior.setIzquierdo(cambiar);		
-                        }
-                        else if(superior.getDerecho()!=null && compararDato(superior.getDerecho().getValor(), raizAux.getValor())==0){
-                            superior.setDerecho(cambiar);
-                        }
-                    }else{
-                        this.raiz = cambiar;
-                    }
-                }
-
-            }
-        }
+    public void insertar( T elem ) {
+       raiz = insAux(raiz, elem);
+       int balanceado = balance();
+       switch (balanceado) {
+		case 2:
+			raiz = rotarIzquierda(raiz);
+			break;
+		case -2:
+			raiz = rotarDerecha(raiz);
+			break;
+		}
     }
+
+    public NodoBinario <T> insAux (NodoBinario <T> nodo, T elem){
+        if (nodo == null){
+            return (new NodoBinario<T>(elem, null, null));
+        }
+        T nodoElem = nodo.getValor();
+        if (nodoElem.compareTo(elem) > 0){
+            nodo = new NodoBinario <T> (nodo.getValor(), insAux(nodo.getIzquierdo(), elem), nodo.getDerecho());
+        }
+        if ((nodo.getValor()).compareTo(elem) < 0){
+            nodo = new NodoBinario <T> (nodo.getValor(), nodo.getIzquierdo(), insAux(nodo.getDerecho(), elem));
+        }
+
+        int balanceado = (nodo.getIzquierdo().getAltura()) - (nodo.getDerecho().getAltura());
+
+        switch (balanceado) {
+            case 2:
+                nodo = rotarIzquierda(nodo);
+                break;
+            case -2:
+                nodo = rotarDerecha(nodo);
+                break;
+        }
+        return nodo;
+    }
+
 
     /**
      * {@inheritDoc}
      */
     public boolean pertenece(T elem) {
-        NodoBinario <T> raizTmp = raiz;
+        NodoBinario<T> aux = raiz;
+		while (aux != null) {
+			if (aux.getValor().compareTo(elem) == 0)
+				return true;
+			else if (aux.getValor().compareTo(elem) > 0)
+				aux = aux.getIzquierdo();
+			else
+				aux = aux.getDerecho();
+		}
+		return false;
+	}
 
-        if(raizTmp == null){
-            return false;
-        }
-        
-        int valor = compararDato(elem, raizTmp.getValor());
-        
-        if(valor == 0){
-            return true;
-        }
-
-        while(raizTmp.getDerecho()!=null || raizTmp.getIzquierdo()!=null){
-            valor = compararDato(elem, raizTmp.getValor());
-	    	if(valor > 0){
-	    		if(raizTmp.getDerecho()!=null){   		
-	    			raizTmp = raizTmp.getDerecho();
-	    		}
-                else{
-	    			return false;
-	    		}
-	    	}
-            else if(valor < 0){	
-	    		if(raizTmp.getIzquierdo()!=null){   
-		    		raizTmp = raizTmp.getIzquierdo();
-	    		}
-                else{
-	    			return false;
-	    		}
-	    	}
-	    	
-	    	if(valor == 0){
-	    		return true;
-	    	}
-    	}
-        return false;
+    private NodoBinario<T> rotarDerecha(NodoBinario<T> nodo) {
+		NodoBinario<T> q = nodo;
+		NodoBinario<T> p = q.getIzquierdo();
+		NodoBinario<T> c = q.getDerecho();
+		NodoBinario<T> a = p.getIzquierdo();
+		NodoBinario<T> b = p.getDerecho();
+		q = new NodoBinario<T>(q.getValor(), b, c);
+		p = new NodoBinario<T>(p.getValor(), a, q);
+		return p;
     }
+
+	private NodoBinario<T> rotarIzquierda (NodoBinario<T> nodo) {
+		NodoBinario<T> q = nodo;
+		NodoBinario<T> p = q.getDerecho();
+		NodoBinario<T> c = q.getIzquierdo();
+		NodoBinario<T> a = p.getIzquierdo();
+		NodoBinario<T> b = p.getDerecho();
+		q = new NodoBinario<T>(q.getValor(), c, a);
+		p = new NodoBinario<T>(p.getValor(), q, b);
+		return p;
+	}   
+
+
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void borrar(T elem){
+    public void borrar(T elem) {
+        throw new UnsupportedOperationException("TODO: implementar");
     }
 
     /**{@inheritDoc}*/
@@ -200,6 +164,13 @@ public class Avl<T> implements Diccionario<T> {
         Avl <T> subDerecho = new Avl <T> (comparador);
         subDerecho.raiz = nuevoArbol;
         return subDerecho;
+    }
+
+    /**{@inheritDoc}*/
+    @Override
+    public int elementos() {
+        List<T> elementos = new LinkedList<>();
+        return (aListaInOrder(raiz, elementos).size());
     }
 
     /**{@inheritDoc}*/
@@ -350,130 +321,7 @@ public class Avl<T> implements Diccionario<T> {
          return elementos;
     }
 
-//------------------------------------------------------------------------------------------------------
-
-    private NodoBinario<T> estructurar(NodoBinario<T> nodo){
-		if(balanceoGeneral(nodo.getDerecho(), nodo.getIzquierdo())==2){
-			if(balanceoGeneral(nodo.getDerecho().getDerecho(), nodo.getDerecho().getIzquierdo())==1  || balanceoGeneral(nodo.getDerecho().getDerecho(), nodo.getDerecho().getIzquierdo()) == 0){
-				nodo = rotacionSimpleIzquierda(nodo);
-			}
-			
-			else if(balanceoGeneral(nodo.getDerecho().getDerecho(), nodo.getDerecho().getIzquierdo())==-1){
-				nodo = rotacionCompuestaDerecha(nodo);
-			}
-		}
-		else if(balanceoGeneral(nodo.getDerecho(), nodo.getIzquierdo())==-2){
-			if(balanceoGeneral(nodo.getIzquierdo().getDerecho(), nodo.getIzquierdo().getIzquierdo())==-1 || balanceoGeneral(nodo.getDerecho().getDerecho(), nodo.getDerecho().getIzquierdo())==0){
-				nodo = rotacionSimpleDerecha(nodo);
-			}
-			
-			else if(balanceoGeneral(nodo.getIzquierdo().getDerecho(), nodo.getIzquierdo().getIzquierdo())==1){
-				nodo = rotacionCompuestaIzquierda(nodo);
-			}
-		}
-
-		return nodo;	
-    }
-
-    //----------------------- Rotaciones ------------------------------
-
-    private NodoBinario<T> rotacionSimpleDerecha(NodoBinario<T> nodo){
-    	NodoBinario<T> nodoTmp = nodo;
-    	nodo = nodoTmp.getIzquierdo();
-
-		nodoTmp.setIzquierdo(nodo.getDerecho());
-		nodo.setDerecho(nodoTmp);
-		return nodo;
-    }
-
-    private NodoBinario<T> rotacionSimpleIzquierda(NodoBinario<T> nodo){
-		NodoBinario<T> nodoTmp = nodo;
-		
-    	nodo = nodoTmp.getDerecho(); 
-		nodoTmp.setDerecho(nodo.getIzquierdo());
-
-		nodo.setIzquierdo(nodoTmp);
-
-		return nodo;
-    }
-
-    private NodoBinario<T> rotacionCompuestaIzquierda(NodoBinario<T> nodo){
-    	NodoBinario<T> nodoTmp = nodo; 
-
-        nodoTmp = rotacionSimpleIzquierda(nodoTmp.getIzquierdo());
-        
-		nodo.setIzquierdo(nodoTmp); 
-		nodoTmp = rotacionSimpleDerecha(nodo); 
-		return nodoTmp;
-    }
-
-    private NodoBinario<T> rotacionCompuestaDerecha(NodoBinario<T> nodo){
-    	NodoBinario<T> nodoTmp = nodo;
-    	
-        nodoTmp = rotacionSimpleDerecha(nodoTmp.getDerecho());
-	
-		nodo.setDerecho(nodoTmp);
-
-		nodoTmp = rotacionSimpleIzquierda(nodo);
-
-		return nodoTmp;
-    }
- //-----------------------------------------------------------------------------------------------------------------------
-    private int equilibrado(NodoBinario<T> n){
-    int hIzq = 0;
-    int hDer = 0;
     
-    if(n==null){
-        return 0;
-    }
-    hIzq = equilibrado(n.getIzquierdo());
-    	
-    	if(hIzq < 0){
-    		return hIzq;
-    	}
-    	
-    	hDer = equilibrado(n.getDerecho());
-    	
-    	if(hDer <0){
-    		return hDer;
-    	}
 
-    	if(Math.abs(hIzq - hDer) > 1){
-    		return -1;
-    	}
-
-    	return Math.max(hIzq, hDer) + 1;
-	}
-//-----------------------------------------------------------------------
-private NodoBinario<T> padre(NodoBinario<T> nodo){
-    NodoBinario<T> raizTmp = raiz;
-    Stack<NodoBinario<T>> pila = new Stack<NodoBinario<T>>();
-    pila.push(raizTmp);	
-    while(raizTmp.getDerecho()!=null || raizTmp.getIzquierdo()!=null){
-        if(this.compararDato(nodo.getValor(), raizTmp.getValor())>0){
-            if(raizTmp.getDerecho()!=null){   	
-                raizTmp = raizTmp.getDerecho();
-            }
-        }
-        else if(this.compararDato(nodo.getValor(), raizTmp.getValor())<0){	
-            if(raizTmp.getIzquierdo()!=null){   
-                raizTmp = raizTmp.getIzquierdo();
-            }
-        }
-        if(this.compararDato(nodo.getValor(), raizTmp.getValor())==0){
-            return pila.pop();
-        }
-
-        pila.push(raizTmp);	
-    }
-    return pila.pop();
-}
-private int compararDato(T t1, T t2){
-    if(this.comparador==null){
-        return ((Comparable)t1).compareTo(t2);
-    }else{
-        return this.comparador.compare(t1,t2);
-    }
-}
 
 }
