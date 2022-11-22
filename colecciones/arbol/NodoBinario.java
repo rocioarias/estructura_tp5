@@ -10,7 +10,7 @@ public class NodoBinario<T>  {
     private int altura;
 
 
-    NodoBinario(T valor, NodoBinario<T> izquierdo, NodoBinario<T> derecho) {
+    public NodoBinario(T valor, NodoBinario<T> izquierdo, NodoBinario<T> derecho) {
        this.valor = valor;
        this.izquierdo = izquierdo;
        this.derecho = derecho;
@@ -40,28 +40,34 @@ public class NodoBinario<T>  {
     }
 
 
-    T getValor() {
+    public T getValor() {
         return valor;
     }
 
-    void setValor(T nuevoValor) {
+    public void setValor(T nuevoValor) {
         this.valor = nuevoValor;
     }
 
-    NodoBinario<T> getIzquierdo() {
+    public NodoBinario<T> getIzquierdo() {
         return izquierdo;
     }
 
-    void setIzquierdo(NodoBinario<T> nuevoIzquierdo) {
+    public void setIzquierdo(NodoBinario<T> nuevoIzquierdo) {
         this.izquierdo = nuevoIzquierdo;
+        if(altura < nuevoIzquierdo.getAltura()){
+            this.altura = nuevoIzquierdo.getAltura();
+        }
     }
 
-    NodoBinario<T> getDerecho() {
+    public NodoBinario<T> getDerecho() {
         return derecho;
     }
 
-    void setDerecho(NodoBinario<T> nuevoDerecho) {
+    public void setDerecho(NodoBinario<T> nuevoDerecho) {
         this.derecho = nuevoDerecho;
+        if(altura < nuevoDerecho.getAltura()){
+            this.altura = nuevoDerecho.getAltura();
+        }
     }
 
     public int getAltura() {
