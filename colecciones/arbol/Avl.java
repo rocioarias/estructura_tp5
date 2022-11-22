@@ -63,11 +63,11 @@ public class Avl<T> implements Diccionario<T> {
         if (nodo == null){
             return (new NodoBinario<T>(elem, null, null));
         }
-        T nodoElem = nodo.getValor();
-        if (nodoElem.compareTo(elem) > 0){
+
+        if (this.compararDato(nodo.getValor(),elem) > 0){
             nodo = new NodoBinario <T> (nodo.getValor(), insAux(nodo.getIzquierdo(), elem), nodo.getDerecho());
         }
-        if ((nodo.getValor()).compareTo(elem) < 0){
+        if (this.compararDato(nodo.getValor(),elem) < 0){
             nodo = new NodoBinario <T> (nodo.getValor(), nodo.getIzquierdo(), insAux(nodo.getDerecho(), elem));
         }
 
@@ -91,9 +91,9 @@ public class Avl<T> implements Diccionario<T> {
     public boolean pertenece(T elem) {
         NodoBinario<T> aux = raiz;
 		while (aux != null) {
-			if (aux.getValor().compareTo(elem) == 0)
+			if (this.compararDato(aux.getValor(),elem) == 0)
 				return true;
-			else if (aux.getValor().compareTo(elem) > 0)
+			else if (this.compararDato(aux.getValor(),elem) > 0)
 				aux = aux.getIzquierdo();
 			else
 				aux = aux.getDerecho();
@@ -321,7 +321,13 @@ public class Avl<T> implements Diccionario<T> {
          return elementos;
     }
 
-    
+    private int compararDato(T t1, T t2){
+    	if(this.comparador==null){
+    		return ((Comparable)t1).compareTo(t2);
+    	}else{
+    		return this.comparador.compare(t1,t2);
+    	}
+    }
 
 
 }
