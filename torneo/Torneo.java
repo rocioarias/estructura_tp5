@@ -18,6 +18,7 @@ import java.util.List;
 public class Torneo {
     Set<Equipo> equipos;
     Diccionario<PartidosEquipo> posiciones;
+    
     /**
      * Dado un equipo {@code e}, retorna el equipo siguiente (el que le sigue en cantidad de puntos) en la tabla de posiciones.
      * Esta operacion debe realizarse en O(log n).
