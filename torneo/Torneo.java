@@ -26,13 +26,8 @@ public class Torneo {
      * @return Equipo siguiente segun la tabla de posiciones del torneo, si hay mas de un equipo con partidos jugados.
      */
     public Equipo siguiente(Equipo e){
-            LinkedList lista = new LinkedList<>();
-            lista.addAll(posiciones.aLista());
-            lista.sort(new SortbyPuntos());
-            Equipo aux = (Equipo)lista.get(lista.indexOf(e)+1);
-        return aux;
-    }
 
+    }
     /**
      * Registra en la tabla de posiciones los valores asociados a los equipos que jugaron un partido del torneo.
      * Incluye agregar todos los datos del partido necesarios para el calculo de los puntajes segun el reglamento del torneo.
@@ -49,25 +44,6 @@ public class Torneo {
      */
     public void agregarPartido(Equipo eLocal, Equipo eVisitante, int golesEL, int golesEV, int amarillasEL, int amarillasEV, int rojasEL, int rojasEV){
         
-        if(posiciones != null){
-            List<PartidosEquipo> lista = new LinkedList<>();
-            lista = posiciones.aLista();
-            Boolean visitante, local;
-            local = lista.contains(eLocal);
-            visitante = lista.contains(eVisitante);
-
-
-            if (local && visitante){
-                calcularPuntos(eLocal, golesEL, golesEV, amarillasEL,rojasEL);
-                calcularPuntos(eVisitante,golesEV, golesEL, amarillasEV, rojasEV);
-            }else{
-                if(local == false){
-                    throw new Error("No se ha encontrado el equipo local");
-                }else{
-                    throw new Error("No se ha encontrado el equipo visitante");
-                }
-            }
-        }
     }
 
     /**
@@ -76,11 +52,7 @@ public class Torneo {
      * @return datos de los puntajes asociados a los partidos del equipo con mas puntos en la tabla de posiciones.
      */
     public PartidosEquipo puntero(){
-        LinkedList lista = new LinkedList<>();
-            lista.addAll(posiciones.aLista());
-            lista.sort(new SortbyPuntos());
-            PartidosEquipo aux = (PartidosEquipo)lista.getLast();
-        return aux;
+
     }
 
     /**
@@ -95,34 +67,7 @@ public class Torneo {
 
 
     public void calcularPuntos(Equipo e, int goles, int goles2, int amarillas, int rojas){
-            if(goles > goles2){
-                e.setPuntos(e.getPuntos() + 3);
-            }
-            
-            if(goles == goles2){
-                e.setPuntos(e.getPuntos() + 1);
-            }
 
-        if(amarillas==1){
-            e.setPuntos(e.getPuntos() - 1);
-        }else{
-            if(amarillas==2){
-                e.setPuntos(e.getPuntos() - 3);
-            }else{
-                if(amarillas>2){
-                    while(amarillas>1){
-                        e.setPuntos(e.getPuntos() - 3);
-                        amarillas= amarillas - 2;
-                    }
-                    if(amarillas==1){
-                        e.setPuntos(e.getPuntos() - 1);
-                    }
-                }
-            }
-        }
-        if(rojas>0){
-            e.setPuntos(e.getPuntos() - 4*rojas);
-        }
     }
 
     static class SortbyPuntos implements Comparator<PartidosEquipo> {
