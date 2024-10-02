@@ -33,7 +33,9 @@ public class PartidosEquipo {
 		this.amarillasY = amarillasY;
 		this.rojasX = rojasX;
 		this.rojasY = rojasY;
-		setEquiposPuntajes();
+		if (equipoX != null && equipoY != null) {
+            setEquiposPuntajes();
+        }
 	}
 
 	public Equipo getEquipoX() {

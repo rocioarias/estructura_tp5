@@ -79,7 +79,7 @@ public class Torneo {
         public int compare(PartidosEquipo pe1, PartidosEquipo pe2) {
             int puntosDiff = pe1.getEquipoX().getPuntos() - pe2.getEquipoX().getPuntos();
             if (puntosDiff != 0) {
-                return -puntosDiff; // Orden descendente de puntos
+                return -puntosDiff;
             }
 
             int diffGoles = (pe1.getGolesX() - pe1.getGolesY()) - (pe2.getGolesX() - pe2.getGolesY());
