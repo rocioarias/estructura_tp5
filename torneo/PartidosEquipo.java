@@ -1,9 +1,9 @@
 package torneo;
-import torneo.Equipo;
-import java.util.Comparator;
 
-public class PartidosEquipo{
-    
+import torneo.Equipo;
+
+public class PartidosEquipo {
+	
 	private Equipo equipoX;
 	private Equipo equipoY;
 	private int golesX;
@@ -24,19 +24,17 @@ public class PartidosEquipo{
 		this.rojasY = 0;
 	}
 
-
-    
-    public PartidosEquipo(Equipo equipoX, Equipo equipoY, int golesX, int golesY, int amarillasX, int amarillasY, int rojasX, int rojasY) {
-        this.equipoX = equipoX;
-        this.equipoY = equipoY;
-        this.golesX = golesX;
-        this.golesY = golesY;
-        this.amarillasX = amarillasX;
-        this.amarillasY = amarillasY;
-        this.rojasX = rojasX;
-        this.rojasY = rojasY;
+	public PartidosEquipo(Equipo equipoX, Equipo equipoY, int golesX, int golesY, int amarillasX, int amarillasY, int rojasX, int rojasY) {
+		this.equipoX = equipoX;
+		this.equipoY = equipoY;
+		this.golesX = golesX;
+		this.golesY = golesY;
+		this.amarillasX = amarillasX;
+		this.amarillasY = amarillasY;
+		this.rojasX = rojasX;
+		this.rojasY = rojasY;
 		setEquiposPuntajes();
-    }
+	}
 
 	public Equipo getEquipoX() {
 		return equipoX;
