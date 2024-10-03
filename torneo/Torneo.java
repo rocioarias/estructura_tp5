@@ -6,99 +6,131 @@ import colecciones.arbol.Diccionario;
 import colecciones.arbol.Diccionario.Orden;
 
 import java.util.Set;
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Clase Torneo que representa un torneo de fútbol donde se pueden gestionar equipos, partidos y sus posiciones en una tabla.
+ */
 @SuppressWarnings("unchecked")
 public class Torneo {
     Set<Equipo> equipos = new HashSet<Equipo>();
-    myComparator versus = new myComparator();
+    Comparation versus = new Comparation();
     Diccionario<PartidosEquipo> posiciones = new Avl<PartidosEquipo>(versus);
     HashMap<Equipo, Integer> puntosMapa = new HashMap<>();
-    
+
     /**
      * Dado un equipo {@code e}, retorna el equipo siguiente (el que le sigue en cantidad de puntos) en la tabla de posiciones.
-     * Esta operacion debe realizarse en O(log n).
-     * @param e equipo del que se quiere calcular cual es el que le sigue segun la tabla de posiciones del torneo.
-     * @return Equipo siguiente segun la tabla de posiciones del torneo, si hay mas de un equipo con partidos jugados.
+     * Esta operación debe realizarse en O(log n).
+     *
+     * @param e equipo del que se quiere calcular cuál es el que le sigue según la tabla de posiciones del torneo.
+     * @return Equipo siguiente según la tabla de posiciones del torneo, si hay más de un equipo con partidos jugados.
      */
-    public Equipo siguiente(Equipo e){
+    public Equipo siguiente(Equipo e) {
         PartidosEquipo pe = posiciones.sucesor(new PartidosEquipo(e, null, 0, 0, 0, 0, 0, 0));
         return (pe == null) ? null : pe.getEquipoX();
     }
 
     /**
      * Registra en la tabla de posiciones los valores asociados a los equipos que jugaron un partido del torneo.
-     * Incluye agregar todos los datos del partido necesarios para el calculo de los puntajes segun el reglamento del torneo.
-     * Esta operacion debe realizarse en O(log n).
-     * @param eLocal Equipo Local del partido.
-     * @param eVisitante Equipo Visitante del partido.
-     * @param golesEL goles a favor del equipo Local.
-     * @param golesEV goles a favor del equipo Visitante.
-     * @param amarillasEL suma de amonestaciones/expulsiones recibidas por jugadores del equipo Local.
-     * @param amarillasEV suma de amonestaciones/expulsiones recibidas por jugadores del equipo Visitante.
-     * @param rojasEL suma de amonestaciones/expulsiones recibidas por jugadores del equipo Local.
-     * @param rojasEV suma de amonestaciones/expulsiones recibidas por jugadores del equipo Visitante.
-
+     * Incluye agregar todos los datos del partido necesarios para el cálculo de los puntajes según el reglamento del torneo.
+     * Esta operación debe realizarse en O(log n).
+     *
+     * @param eLocal      Equipo Local del partido.
+     * @param eVisitante  Equipo Visitante del partido.
+     * @param golesEL     Goles a favor del equipo Local.
+     * @param golesEV     Goles a favor del equipo Visitante.
+     * @param amarillasEL Número de tarjetas amarillas recibidas por el equipo Local.
+     * @param amarillasEV Número de tarjetas amarillas recibidas por el equipo Visitante.
+     * @param rojasEL     Número de tarjetas rojas recibidas por el equipo Local.
+     * @param rojasEV     Número de tarjetas rojas recibidas por el equipo Visitante.
      */
-    public void agregarPartido(Equipo eLocal, Equipo eVisitante, int golesEL, int golesEV, int amarillasEL, int amarillasEV, int rojasEL, int rojasEV){
+    public void agregarPartido(Equipo eLocal, Equipo eVisitante, int golesEL, int golesEV, int amarillasEL, int amarillasEV, int rojasEL, int rojasEV) {
         PartidosEquipo pe = new PartidosEquipo(eLocal, eVisitante, golesEL, golesEV, amarillasEL, amarillasEV, rojasEL, rojasEV);
+
+        // Actualizar los puntos de los equipos según el resultado del partido
+        if (golesEL > golesEV) {
+            eLocal.setPuntos(eLocal.getPuntos() + 3);
+        } else if (golesEL < golesEV) {
+            eVisitante.setPuntos(eVisitante.getPuntos() + 3);
+        } else {
+            eLocal.setPuntos(eLocal.getPuntos() + 1);
+            eVisitante.setPuntos(eVisitante.getPuntos() + 1);
+        }
+
+        // Insertar el partido en la estructura de posiciones
         posiciones.insertar(pe);
+
+        // Actualizar los puntos en el mapa de puntos
         puntosMapa.put(eLocal, eLocal.getPuntos());
         puntosMapa.put(eVisitante, eVisitante.getPuntos());
     }
 
     /**
      * Retorna el equipo con mayor puntaje de la tabla de posiciones y todos los valores en el torneo asociados a ese equipo.
-     * Esta operacion debe realizarse en O(1).
-     * @return datos de los puntajes asociados a los partidos del equipo con mas puntos en la tabla de posiciones.
+     * Esta operación debe realizarse en O(1).
+     *
+     * @return Datos de los puntajes asociados a los partidos del equipo con más puntos en la tabla de posiciones.
      */
-    public PartidosEquipo puntero(){
+    public PartidosEquipo puntero() {
         return posiciones.raiz();
     }
 
     /**
-     * Dado un equipo {@code e} retorna los puntos que tiene ese equipo segun la tabla de posiciones.
-     * Esta operacion debe realizarse en O(log n).
+     * Dado un equipo {@code e} retorna los puntos que tiene ese equipo según la tabla de posiciones.
+     * Esta operación debe realizarse en O(log n).
+     *
      * @param e equipo del que se quiere extraer los puntos acumulados en el torneo.
-     * @return los puntos que tiene el equipo {@code e} segun la tabla de posiciones.
+     * @return Los puntos que tiene el equipo {@code e} según la tabla de posiciones.
      */
-    public int puntos(Equipo e){
-        return puntosMapa.getOrDefault(e, null);
+    public int puntos(Equipo e) {
+        return puntosMapa.getOrDefault(e, 0);
     }
 
 
-    static class myComparator implements Comparator<PartidosEquipo> {
+    static class Comparation implements Comparator<PartidosEquipo> {
+
         @Override
-        public int compare(PartidosEquipo pe1, PartidosEquipo pe2) {
-            int puntosDiff = pe1.getEquipoX().getPuntos() - pe2.getEquipoX().getPuntos();
-            if (puntosDiff != 0) {
-                return -puntosDiff;
+        public int compare(PartidosEquipo uno, PartidosEquipo dos) {
+            int puntosUno = uno.getEquipoX().getPuntos();
+            int puntosDos = dos.getEquipoX().getPuntos();
+        
+            if (puntosUno != puntosDos) {
+                return puntosDos - puntosUno; 
             }
-
-            int diffGoles = (pe1.getGolesX() - pe1.getGolesY()) - (pe2.getGolesX() - pe2.getGolesY());
-            if (diffGoles != 0) {
-                return -diffGoles; 
+        
+            int fairPlayUno = (uno.getAmarillasX() + 2 * uno.getRojasX()) + (uno.getAmarillasY() + 2 * uno.getRojasY());
+            int fairPlayDos = (dos.getAmarillasX() + 2 * dos.getRojasX()) + (dos.getAmarillasY() + 2 * dos.getRojasY());
+        
+            if (fairPlayUno != fairPlayDos) {
+                return fairPlayUno - fairPlayDos;
             }
-
-            int golesAFavorDiff = pe1.getGolesX() - pe2.getGolesX();
-            if (golesAFavorDiff != 0) {
-                return -golesAFavorDiff; 
+        
+            int golesUno = uno.getGolesX() + uno.getGolesY();
+            int golesDos = dos.getGolesX() + dos.getGolesY();
+        
+            if (golesUno != golesDos) {
+                return golesUno - golesDos;
             }
-
-            int fairPlayDiff = calcularPuntajeFairPlay(pe1) - calcularPuntajeFairPlay(pe2);
-            return fairPlayDiff; 
+        
+            int comparacionEquipos = uno.getEquipoX().getNombre().compareTo(dos.getEquipoX().getNombre());
+            if (comparacionEquipos != 0) {
+                return comparacionEquipos;
+            }
+            comparacionEquipos = uno.getEquipoY().getNombre().compareTo(dos.getEquipoY().getNombre());
+            if (comparacionEquipos != 0) {
+                return comparacionEquipos;
+            }
+        
+            return 0;
         }
-
-        private int calcularPuntajeFairPlay(PartidosEquipo pe) {
-            return (pe.getAmarillasX() + pe.getAmarillasY()) + 3 * (pe.getRojasX() + pe.getRojasY());
-        }
-    }
+        
     
+
+}
+
 }

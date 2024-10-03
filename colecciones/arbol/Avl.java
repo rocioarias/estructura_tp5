@@ -203,24 +203,27 @@ public class Avl<T> implements Diccionario<T> {
         }
     }
 
-    /** {@inheritDoc} */
     @Override
     public T sucesor(T elem) {
-        LinkedList<T> lista = new LinkedList<>();
-        lista = (LinkedList<T>) aLista();
-        boolean fin = true;
-        T retorno = null;
-
-        for (int i = 1; i <= elementos() && fin; i++) {
-            if (lista.getFirst() == elem) {
-                lista.removeFirst();
-                retorno = lista.getFirst();
-                fin = false;
-            } else
-                lista.removeFirst();
+        NodoBinario<T> actual = raiz;
+        NodoBinario<T> sucesor = null;
+    
+        while (actual != null) {
+            int cmp = comparador.compare(elem, actual.getValor());
+    
+            if (cmp < 0) {
+                // Si el valor del nodo actual es mayor que elem, puede ser un posible sucesor
+                sucesor = actual;
+                actual = actual.getIzquierdo();
+            } else {
+                // Si el valor del nodo actual es menor o igual que elem, buscamos a la derecha
+                actual = actual.getDerecho();
+            }
         }
-        return retorno;
+    
+        return (sucesor == null) ? null : sucesor.getValor();
     }
+    
 
     /**
      * {@inheritDoc}
