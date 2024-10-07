@@ -62,6 +62,41 @@ public class Torneo {
             eVisitante.setPuntos(eVisitante.getPuntos() + 1);
         }
 
+
+
+        if (amarillasEL > 0) {
+            eLocal.setPuntos(eLocal.getPuntos() - amarillasEL);
+            if (rojasEL > 0) {
+                eLocal.setPuntos(eLocal.getPuntos() - 4);
+            }
+        }
+        if (amarillasEL > 1) {
+            eLocal.setPuntos(eLocal.getPuntos() - 2);
+        }
+
+
+
+        if(amarillasEV > 0){
+            eVisitante.setPuntos(eVisitante.getPuntos() - (amarillasEV));
+            if (rojasEV > 0) {
+                eVisitante.setPuntos(eVisitante.getPuntos() - 4);
+            }
+        }
+
+        if (amarillasEV > 1) {
+            eVisitante.setPuntos(eVisitante.getPuntos() - 2);
+        }
+
+        if(rojasEV > 0){
+            eVisitante.setPuntos(eVisitante.getPuntos() - (rojasEV * 4));
+        }
+
+        if(rojasEL > 0){
+            eLocal.setPuntos(eLocal.getPuntos() - (rojasEL * 4));
+        }
+
+        
+
         // Insertar el partido en la estructura de posiciones
         posiciones.insertar(pe);
 
@@ -110,7 +145,7 @@ public class Torneo {
             if (golesUno != golesDos) {
                 return golesUno - golesDos;
             }
-            
+
             int fairPlayUno = (uno.getAmarillasX() + uno.getRojasX());
             int fairPlayDos = (dos.getAmarillasX() + dos.getRojasX());
         
