@@ -98,24 +98,26 @@ public class Torneo {
         public int compare(PartidosEquipo uno, PartidosEquipo dos) {
             int puntosUno = uno.getEquipoX().getPuntos();
             int puntosDos = dos.getEquipoX().getPuntos();
-        
+            
             if (puntosUno != puntosDos) {
                 return puntosDos - puntosUno; 
             }
         
-            int fairPlayUno = (uno.getAmarillasX() + 2 * uno.getRojasX()) + (uno.getAmarillasY() + 2 * uno.getRojasY());
-            int fairPlayDos = (dos.getAmarillasX() + 2 * dos.getRojasX()) + (dos.getAmarillasY() + 2 * dos.getRojasY());
-        
-            if (fairPlayUno != fairPlayDos) {
-                return fairPlayUno - fairPlayDos;
-            }
-        
+            //Instancia de fairplay
             int golesUno = uno.getGolesX() + uno.getGolesY();
             int golesDos = dos.getGolesX() + dos.getGolesY();
         
             if (golesUno != golesDos) {
                 return golesUno - golesDos;
             }
+            
+            int fairPlayUno = (uno.getAmarillasX() + uno.getRojasX());
+            int fairPlayDos = (dos.getAmarillasX() + dos.getRojasX());
+        
+            if (fairPlayUno != fairPlayDos) {
+                return fairPlayUno - fairPlayDos;
+            }
+        
         
             int comparacionEquipos = uno.getEquipoX().getNombre().compareTo(dos.getEquipoX().getNombre());
             if (comparacionEquipos != 0) {
